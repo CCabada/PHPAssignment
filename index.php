@@ -1,7 +1,14 @@
+<?php include "item.php";
+
+use function Sodium\add; ?>
 <html>
 
 <head>
     <title>Super Market</title>
+    <div style="text-align: left;">
+        <button onclick="validation">Sign - In</button>
+
+    </div>
     <style>
         body{
             background-image: url("Supermarket-shopping-cart-1.jpg");
@@ -19,48 +26,73 @@
             font-size: 40px;
             font-weight: bold;
         }
-        h5{
+        h3{
             color: #FFFFFF;
             font-family: arial, sans-serif;
             font-size: 20px;
             font-weight: bold;
-            margin-top: auto;
-            margin-bottom: auto;
+
         }
     </style>
 </div>
 <body>
+
+
+<div style="text-align: center;">
+
+    <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
+        <label for = "plu" color = #FFFFF >
+            PLU
+            <input type="text" name = "plu">
+        </label>
+        <label for = "name" >
+            Name
+            <input type="text" name="name">
+        </label>
+        <p/>
+        <input type=submit value="Enter">
+
+
+    </form>
+    <h2>Inventory:</h2>
+    <?php
+    if(isset($_POST["inventory"])){
+        add_note($_POST["note"] . "<br>");
+    }
+    display();
+    ?>
+</div>
+
+
+</html>
 <?php
-$myfile = fopen("produce.txt", "r") or die("Unable to open file!");
-$document = file_get_contents("produce.txt");
+$filePath = "inventory.txt";
 $name = $plu ='';
+$inventory = array();
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = test_input($_POST["name"], $document);
-    $plu = test_input($_POST["plu"], $document);
+    add_items($_POST["plu"], $_POST["name"]);
 }
 
-function test_input($data, $doc){
-    if($data == $doc){
-        echo $doc;
+
+function display(){
+    global $filePath;
+    if(file_exists($filePath)){
+        $file = nl2br(file_get_contents($filePath));
+        echo $file;
     }
 }
 
+function add_items($plu, $name){
+    global $filePath;
+    global $inventory;
 
-fclose($myfile);
+    if(!empty($plu) && !empty($name)){
+        $inventory = add($plu, $name);
+        $file = fopen($filePath, "a");
+        fputs($file, nl2br($inventory));
+        fclose($file);
+    }
+}
+
 ?>
-
-<div style="text-align: center;">
-<h5>Enter PLU and Name.</h5>
-
-<form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
-    <textarea cols=10 rows=1 name="plu"> </textarea> <textarea cols=10 rows=1 name="name"> </textarea>
-    <p/>
-    <input type=submit value="Send">
-</form>
-</div>
-<div style="text-align: center;">
-    <button>Sign - In</button>
-
-</div>
-
-</html>
