@@ -1,0 +1,7 @@
+# shipping manifest: El Paso store, September 10, 2019
+# format: SKU, price code, number, expiration date
+3326-111 109.90 23
+3366-767 ffb3 3099
+3326-129 xx  93
+3363-139 9.99 1000
+3362-878 2.99 800

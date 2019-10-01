@@ -1,0 +1,11 @@
+# shipping manifest: El Paso store, September 20, 2019
+# format: SKU, price code, number, expiration date
+3362-202 aa 11
+3366-767 bb 2000
+3362-392 aa 400
+3326-111 100.00 25  Sept-25-2019
+3366-767 ffb3 3099  unknown
+3362-878 2.99 800
+3366-117 999 0
+3363-139 bq 1
+3366-117 999 0

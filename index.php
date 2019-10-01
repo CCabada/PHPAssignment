@@ -1,43 +1,15 @@
-<?php include "item.php";?>
-
-<html>
+<html  lang="en-US">
 
 <head>
     <title>Super Market</title>
-    <div style="text-align: left;">
-        <button formaction="Submit">Sign - In</button>
-
-    </div>
-    <style>
-        body{
-            background-image: url("Supermarket-shopping-cart-1.jpg");
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-    </style>
 </head>
 <div style="text-align: center;">
     <h1>Super Market</h1>
-    <style>
-        h1 {
-            color: #FFFFFF;
-            font-family: arial, sans-serif;
-            font-size: 40px;
-            font-weight: bold;
-        }
-        h3{
-            color: #FFFFFF;
-            font-family: arial, sans-serif;
-            font-size: 20px;
-            font-weight: bold;
 
-        }
-    </style>
 </div>
 <body>
 
-
-<div style="text-align: center;">
+<div style="text-align: center;" >
 
     <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
         <label for = "plu"  >
@@ -48,31 +20,90 @@
             Name
             <input type="text" pattern = "[A-Za-z]+" name="name">
         </label>
-        <p/>
-        <input type=submit value="Enter">
-
+        <input type=submit value="Enter" >
+        <form method="post" enctype="multipart/form-data">
+            <br>
+            <label> Insert Picture </label>
+            <input type="file" name="fileToUpload" id="fileToUpload">
+            <input type="submit" value="Upload Image" name="submit">
+        </form>
 
     </form>
     <h2>Inventory:</h2>
+    <textarea>
     <?php
     if(isset($_POST["inventory"])){
-        add_note($_POST["note"] . "<br>");
+        display($_POST["note"] . "<br>");
     }
-    display();
+    show_items();
     ?>
+    </textarea>
 </div>
+<style>
+    body{
 
+        width: 100%;
+        height: 100%;
+        background-image: url("img/Supermarket-shopping-cart-1.jpg");
+        background-repeat: no-repeat;
+        background-position: center;
+
+
+    }
+    h1 {
+        color: #000000;
+        font-family: arial, sans-serif;
+        font-size: 40px;
+        font-weight: bold;
+    }
+    h2{
+        color: #000000;
+        font-family: arial, sans-serif;
+        font-size: 20px;
+        font-weight: bold;
+    }
+    h3{
+        color: #FFFFFF;
+        font-family: arial, sans-serif;
+        font-size: 20px;
+        font-weight: bold;
+
+    }
+    label{
+        color: #000000;
+        font-family: arial, sans-serif;
+        font-size: 20px;
+        font-weight: bold;
+    }
+</style>
 
 </html>
-<?php
+<?php include "item.php";
+$target_dir = "img/";
+$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+$uploadOk = 1;
+$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+// Check if image file is a actual image or fake image
+if(isset($_POST["submit"])) {
+    $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+    if($check !== false) {
+        echo "File is an image - " . $check["mime"] . ".";
+        $uploadOk = 1;
+    } else {
+        echo "File is not an image.";
+        $uploadOk = 0;
+    }
+}
+
+
 $filePath = "inventory.txt";
 $name = $plu ='';
 $inventory = array();
 
 
-$count = item:: count();
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    add_items($_POST["plu"], $_POST["name"]);
+    item::add_item($_POST["plu"], $_POST["name"]);
 }
 
 
@@ -80,23 +111,32 @@ function display(){
     global $filePath;
     if(file_exists($filePath)){
         $file = nl2br(file_get_contents($filePath));
-        return $file;
+        echo $file;
     }
+
 }
 
+function show_items(){
+    global $filePath;
+    if(file_exists($filePath)){
+        $fp = fopen($filePath, "r"); //Reads
+        while(!feof($fp)){
+            echo fgets($fp); //Reads line
+        }
+        fclose($fp);
+    }
+}
 
 function add_items($plu, $name){
     global $filePath;
     global $inventory;
-    item::item($plu, $name);
-    item:: add_item(item);
-
     if(!empty($plu) && !empty($name)){
-        $inventory = add($plu, $name);
+        $inventory = add_item(new item($plu, $name));
         $file = fopen($filePath, "a");
         fputs($file, nl2br($inventory));
         fclose($file);
     }
+
 }
 
 ?>
