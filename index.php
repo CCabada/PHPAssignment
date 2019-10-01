@@ -1,12 +1,11 @@
-<?php include "item.php";
+<?php include "item.php";?>
 
-use function Sodium\add; ?>
 <html>
 
 <head>
     <title>Super Market</title>
     <div style="text-align: left;">
-        <button onclick="validation">Sign - In</button>
+        <button formaction="Submit">Sign - In</button>
 
     </div>
     <style>
@@ -41,13 +40,13 @@ use function Sodium\add; ?>
 <div style="text-align: center;">
 
     <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
-        <label for = "plu" color = #FFFFF >
+        <label for = "plu"  >
             PLU
-            <input type="text" name = "plu">
+            <input type="text" pattern = "[0-9]{4}" maxlength="4" name = "plu" >
         </label>
         <label for = "name" >
             Name
-            <input type="text" name="name">
+            <input type="text" pattern = "[A-Za-z]+" name="name">
         </label>
         <p/>
         <input type=submit value="Enter">
@@ -70,6 +69,8 @@ $filePath = "inventory.txt";
 $name = $plu ='';
 $inventory = array();
 
+
+$count = item:: count();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     add_items($_POST["plu"], $_POST["name"]);
 }
@@ -79,13 +80,16 @@ function display(){
     global $filePath;
     if(file_exists($filePath)){
         $file = nl2br(file_get_contents($filePath));
-        echo $file;
+        return $file;
     }
 }
+
 
 function add_items($plu, $name){
     global $filePath;
     global $inventory;
+    item::item($plu, $name);
+    item:: add_item(item);
 
     if(!empty($plu) && !empty($name)){
         $inventory = add($plu, $name);
