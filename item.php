@@ -5,8 +5,7 @@ class item{
 
 
     function item($plu, $name){
-        $this->plu;
-        $this->name;
+
         $this->item($plu, $name);
     }
 
