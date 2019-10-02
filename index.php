@@ -1,5 +1,9 @@
 <html  lang="en-US">
-
+<?php
+$filePath = "invoice-sep20.txt";
+$name = $plu ='';
+$inventory = array();
+?>
 <head>
     <title>Super Market</title>
 </head>
@@ -11,31 +15,28 @@
 
 <div style="text-align: center;" >
 
-    <form action="<?= $_SERVER['PHP_SELF'] ?>" method="POST">
+    <form  method="POST">
         <label for = "plu"  >
             PLU
-            <input type="text" pattern = "[0-9]{4}" maxlength="4" name = "plu" >
+            <input type="text" placeholder="PLU" pattern = "[0-9]{4}" maxlength="4" name = "plu" >
         </label>
         <label for = "name" >
             Name
-            <input type="text" pattern = "[A-Za-z]+" name="name">
+            <input type="text"  placeholder="Name" pattern = "[A-Za-z]+" name="name">
         </label>
         <input type=submit value="Enter" >
-        <form method="post" enctype="multipart/form-data">
+        <form method="post"  enctype="multipart/form-data">
             <br>
             <label> Insert Picture </label>
-            <input type="file" name="fileToUpload" id="fileToUpload">
+            <input type="file" name="file">
             <input type="submit" value="Upload Image" name="submit">
         </form>
 
     </form>
     <h2>Inventory:</h2>
-    <textarea>
+    <textarea >
     <?php
-    if(isset($_POST["inventory"])){
-        display($_POST["note"] . "<br>");
-    }
-    show_items();
+    display($filePath);
     ?>
     </textarea>
 </div>
@@ -80,7 +81,7 @@
 </html>
 <?php include "item.php";
 $target_dir = "img/";
-$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+$target_file = $target_dir.basename($_FILES["fileToUpload"]["name"]);
 $uploadOk = 1;
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 // Check if image file is a actual image or fake image
@@ -96,9 +97,7 @@ if(isset($_POST["submit"])) {
 }
 
 
-$filePath = "inventory.txt";
-$name = $plu ='';
-$inventory = array();
+
 
 
 
@@ -107,8 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 
-function display(){
-    global $filePath;
+function display($filePath){
     if(file_exists($filePath)){
         $file = nl2br(file_get_contents($filePath));
         echo $file;
