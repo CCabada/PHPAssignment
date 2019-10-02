@@ -1,17 +1,53 @@
 <?php
-$item_arr = array();
-
-class item{
 
 
-    function item($plu, $name){
+class item
+{
+    var $plu;
+    var $name;
 
+    public function __construct($plu, $name)
+    {
         $this->item($plu, $name);
     }
 
-    function add_item($item_arr){
+    public function setPLU($par)
+    {
+        $this->plu = $par;
+    }
+
+    public function getPLU()
+    {
+        echo $this->plu;
+    }
+
+    public function setName($par)
+    {
+        $this->name = $par;
+    }
+
+    public function getName()
+    {
+        echo $this->name;
+    }
+    public function getItem(){
+        return $this;
+    }
+
+}
+
+class itemList{
+    public $item_arr = array();
+
+    function add_item($item){
+        array_push($item_arr, $item);
         $cnt = count($item_arr);
         sort($item_arr);
+    }
+
+    function getList(){
+        global $item_arr;
+        return $item_arr;
     }
     function count($item_arr){
         $i = 0;
@@ -22,6 +58,7 @@ class item{
     }
     function delete_item($item_arr, $plu){
 
+        //if(array_key_exists(item::$plu, $item_arr))
         for($i =0; $item_arr[$i] != null; $i++){
             if($item_arr[$i]->plu == $plu){
 
@@ -31,8 +68,6 @@ class item{
 
         }
     }
-
-
 
 
 }

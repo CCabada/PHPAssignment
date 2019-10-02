@@ -1,45 +1,11 @@
 <html  lang="en-US">
-<?php
-$filePath = "invoice-sep20.txt";
+<?php include 'item.php';
+$arr = new itemList();
+$filePath = array("invoice-sep20.txt", "invoice-sep10.txt");
+
 $name = $plu ='';
-$inventory = array();
+
 ?>
-<head>
-    <title>Super Market</title>
-</head>
-<div style="text-align: center;">
-    <h1>Super Market</h1>
-
-</div>
-<body>
-
-<div style="text-align: center;" >
-
-    <form  method="POST">
-        <label for = "plu"  >
-            PLU
-            <input type="text" placeholder="PLU" pattern = "[0-9]{4}" maxlength="4" name = "plu" >
-        </label>
-        <label for = "name" >
-            Name
-            <input type="text"  placeholder="Name" pattern = "[A-Za-z]+" name="name">
-        </label>
-        <input type=submit value="Enter" >
-        <form method="post"  enctype="multipart/form-data">
-            <br>
-            <label> Insert Picture </label>
-            <input type="file" name="file">
-            <input type="submit" value="Upload Image" name="submit">
-        </form>
-
-    </form>
-    <h2>Inventory:</h2>
-    <textarea >
-    <?php
-    display($filePath);
-    ?>
-    </textarea>
-</div>
 <style>
     body{
 
@@ -78,10 +44,61 @@ $inventory = array();
     }
 </style>
 
+<head>
+    <title>Super Market</title>
+</head>
+<div style="text-align: center;">
+    <h1>Super Market</h1>
+
+</div>
+<body>
+
+<div style="text-align: center;" >
+    <section>
+        <form  method="POST">
+            <label for = "plu"  >
+                PLU
+                <input type="text" placeholder="PLU" pattern = "[0-9]{4}" maxlength="4" name = "plu" >
+            </label>
+            <label for = "name" >
+                Name
+                <input type="text"  placeholder="Name" pattern = "[A-Za-z]+" name="name">
+            </label>
+            <input type=submit value="Enter" >
+            <form method="post"  enctype="multipart/form-data">
+                <br>
+                <label> Insert Picture </label>
+                <input type="file" name="fileToUpload" id = "fileToUpload">
+                <input type="submit" value="Upload Image" name="submit">
+            </form>
+
+        </form>
+    </section>
+    <div>
+        <section>
+            <h2>Items added:</h2>
+            <textarea readonly>
+                <?php
+                    //dis_added();
+                ?>
+            </textarea>
+        </section>
+    </div>
+    <aside>
+        <h2>Inventory:</h2>
+        <textarea>
+            <?php
+                //display_inventory();
+            ?>
+        </textarea>
+    </aside>
+</div>
+
+
 </html>
-<?php include "item.php";
+<?
 $target_dir = "img/";
-$target_file = $target_dir.basename($_FILES["fileToUpload"]["name"]);
+$target_file = $target_dir.basename($_FILES["fileToUpload"][$name]);
 $uploadOk = 1;
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 // Check if image file is a actual image or fake image
@@ -96,45 +113,39 @@ if(isset($_POST["submit"])) {
     }
 }
 
-
-
-
-
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    item::add_item($_POST["plu"], $_POST["name"]);
+    $item = new item($_POST["plu"], $_POST["name"]);
+    itemList:: add_item($item);
+
+
+    dis_added();
 }
 
 
-function display($filePath){
-    if(file_exists($filePath)){
-        $file = nl2br(file_get_contents($filePath));
-        echo $file;
-    }
+/**
+ *
+ */
+function dis_added(){
+    global $arr;
+    $arr = itemList:: getList();
 
-}
-
-function show_items(){
-    global $filePath;
-    if(file_exists($filePath)){
-        $fp = fopen($filePath, "r"); //Reads
-        while(!feof($fp)){
-            echo fgets($fp); //Reads line
+    if($arr != null){
+        foreach ($arr as &$item){
+            return $item->getPLU().$item->getName();
         }
-        fclose($fp);
     }
 }
 
-function add_items($plu, $name){
+function display_inventory(){
     global $filePath;
-    global $inventory;
-    if(!empty($plu) && !empty($name)){
-        $inventory = add_item(new item($plu, $name));
-        $file = fopen($filePath, "a");
-        fputs($file, nl2br($inventory));
-        fclose($file);
+    if($filePath == null)
+        echo"Store does not have inventory.";
+    foreach ($filePath as &$path){
+        if(file_exists($path)){
+            $file = nl2br(file_get_contents($path));
+            echo $file;
+        }
     }
-
 }
 
 ?>
