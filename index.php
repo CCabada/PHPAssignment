@@ -78,6 +78,7 @@ $name = $plu ='';
         <section>
             <h2>Items added:</h2>
             <textarea readonly>
+
                 <?php
                     //dis_added();
                 ?>
@@ -87,9 +88,10 @@ $name = $plu ='';
     <aside>
         <h2>Inventory:</h2>
         <textarea>
-            <?php
-                //display_inventory();
-            ?>
+
+                <?php
+                //dis_added();
+                ?>
         </textarea>
     </aside>
 </div>
@@ -97,6 +99,7 @@ $name = $plu ='';
 
 </html>
 <?
+
 $target_dir = "img/";
 $target_file = $target_dir.basename($_FILES["fileToUpload"][$name]);
 $uploadOk = 1;

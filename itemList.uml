@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>PHP</ID>
+  <OriginalElement>\itemList</OriginalElement>
+  <nodes>
+    <node x="0.0" y="0.0">\itemList</node>
+    <node x="9.5" y="189.0">\item</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="\item" target="\itemList">
+      <point x="0.0" y="-103.0" />
+      <point x="0.0" y="69.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="51.5" y="314.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constants</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Fields</Category>
+  </Categories>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+

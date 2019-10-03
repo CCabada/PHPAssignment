@@ -1,7 +1,7 @@
 <?php
 
 
-class item
+class item extends itemList
 {
     var $plu;
     var $name;
