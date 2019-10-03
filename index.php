@@ -1,5 +1,6 @@
 <html  lang="en-US">
 <?php include 'item.php';
+session_start();
 $arr = new itemList();
 $filePath = array("invoice-sep20.txt", "invoice-sep10.txt");
 
@@ -64,79 +65,114 @@ $name = $plu ='';
                 Name
                 <input type="text"  placeholder="Name" pattern = "[A-Za-z]+" name="name">
             </label>
-            <input type=submit value="Enter" >
-            <form method="post"  enctype="multipart/form-data">
-                <br>
-                <label> Insert Picture </label>
-                <input type="file" name="fileToUpload" id = "fileToUpload">
-                <input type="submit" value="Upload Image" name="submit">
-            </form>
-
+            <div>
+                Upload a File:
+                <input name="image" type="file"/>
+                <input type=submit value="Add item" />
+            </div>
         </form>
+
     </section>
     <div>
         <section>
             <h2>Items added:</h2>
-            <textarea readonly>
+            <textarea readonly rows = 10 cols = 50>
 
                 <?php
-                    //dis_added();
+                if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $_SESSION["plu"] = $_POST["plu"];
+                    $_SESSION["name"] = $_POST["name"];
+                    $item = new item($_POST["plu"], $_POST["name"]);
+                    $itemL = (new itemList)->add_item($item);
+                    dis_added($itemL);
+                }
+
                 ?>
             </textarea>
+            </br>
+            </br>
+            <input class='button btn-2' type='submit' name ='reorder' value='Reorder List'
         </section>
     </div>
-    <aside>
-        <h2>Inventory:</h2>
-        <textarea>
+    <div>
+        <aside>
+            <h2>Inventory:</h2>
+            <textarea readonly rows = 10 cols = 50>
 
                 <?php
-                //dis_added();
+                print(display_inventory());
                 ?>
         </textarea>
-    </aside>
+        </aside>
+    </div>
+
 </div>
 
 
 </html>
-<?
+<?php
+if(isset($_FILES['image'])){
+    $errors= array();
+    $file_name = $_FILES['image']['name'];
+    $file_size =$_FILES['image']['size'];
+    $file_tmp =$_FILES['image']['tmp_name'];
+    $file_type=$_FILES['image']['type'];
+    $file_ext=strtolower(end(explode('.',$_FILES['image']['name'])));
 
-$target_dir = "img/";
-$target_file = $target_dir.basename($_FILES["fileToUpload"][$name]);
-$uploadOk = 1;
-$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-// Check if image file is a actual image or fake image
-if(isset($_POST["submit"])) {
-    $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
-    if($check !== false) {
-        echo "File is an image - " . $check["mime"] . ".";
-        $uploadOk = 1;
-    } else {
-        echo "File is not an image.";
-        $uploadOk = 0;
+    $extensions= array("jpeg","jpg","png");
+
+    if(in_array($file_ext,$extensions)=== false){
+        $errors[]="extension not allowed, please choose a JPEG or PNG file.";
+    }
+
+    if($file_size > 2097152){
+        $errors[]='File size must be excately 2 MB';
+    }
+
+    if(empty($errors)==true){
+        move_uploaded_file($file_tmp,"img/".$file_name);
+        echo "Success";
+    }else{
+        print_r($errors);
     }
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $item = new item($_POST["plu"], $_POST["name"]);
-    itemList:: add_item($item);
 
-
-    dis_added();
-}
 
 
 /**
  *
  */
-function dis_added(){
-    global $arr;
-    $arr = itemList:: getList();
+function dis_added($itemL){
+    //echo $item->plu.$item->name;
+     //if($itemL != null){
 
-    if($arr != null){
-        foreach ($arr as &$item){
-            return $item->getPLU().$item->getName();
-        }
+         foreach ($itemL as &$product){
+             echo $product->plu.$product->name;
+         }
+    /*
+    if ($product->picture !== ""){
+        echo "<td><img src='" . $product->picture . "' alt='' height=40 width=40></img></td>";
+    }else{
+        echo "<td>";
     }
+//}
+// Create table
+
+foreach ($itemL as $product){
+echo "<tr>";
+if ($product->picture !== ""){
+  echo "<td><img src='" . $product->picture . "' alt='' height=40 width=40></img></td>";
+}else{
+  echo "<td>";
+}
+echo "<td>" . $product->name . "</td>";
+echo "<td>" . $product->plu . "</td>";
+// Checkboxes
+echo "<td><input type='checkbox' name='checkbox[]' value=" . $product->plu . "/></td>";
+echo "</tr>";
+}
+*/
 }
 
 function display_inventory(){
@@ -145,10 +181,19 @@ function display_inventory(){
         echo"Store does not have inventory.";
     foreach ($filePath as &$path){
         if(file_exists($path)){
-            $file = nl2br(file_get_contents($path));
-            echo $file;
+            if ($fh = fopen($path, 'r')) {
+                while (!feof($fh)) {
+                    $line = fgets($fh);
+                    list($SKU, $price, $number, $expDate) = explode(" ", $line);
+                    echo "SKU = $SKU Price = $price Number = $number Experation date = $expDate </p>";
+                }
+
+            }
+            fclose($fh);
+
         }
     }
 }
+
 
 ?>

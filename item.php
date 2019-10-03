@@ -3,36 +3,27 @@
 
 class item extends itemList
 {
-    var $plu;
-    var $name;
+    public $plu;
+    public $name;
+    public $picture;
+    public $priority;
+    public $quantity;
+    function __construct($plu, $name){
+        $this -> plu = $plu;
+        $this ->name = $name;
+        $this ->picture = '';
+        $this ->priority = 0;
+        $this ->quantity = 0;
 
-    public function __construct($plu, $name)
-    {
-        $this->item($plu, $name);
     }
-
-    public function setPLU($par)
+    /**
+     * @param int $priority
+     */
+    public function setPriority($priority)
     {
-        $this->plu = $par;
-    }
-
-    public function getPLU()
-    {
-        echo $this->plu;
-    }
-
-    public function setName($par)
-    {
-        $this->name = $par;
+        $this->priority = $priority;
     }
 
-    public function getName()
-    {
-        echo $this->name;
-    }
-    public function getItem(){
-        return $this;
-    }
 
 }
 
@@ -40,14 +31,24 @@ class itemList{
     public $item_arr = array();
 
     function add_item($item){
-        array_push($item_arr, $item);
-        $cnt = count($item_arr);
-        sort($item_arr);
-    }
 
+        if($this->isItemInList($item)){
+            echo "item is already in array.";
+            $item -> quantity++;
+        }
+        array_push($this->item_arr, $item);
+        $item -> quantity++;
+        $cnt = count($this->item_arr);
+        sort($this->item_arr);
+    }
+    function isItemInList($pro){
+        if (in_array($pro, $this->item_arr)){
+            return True;
+        }
+        return False;
+    }
     function getList(){
-        global $item_arr;
-        return $item_arr;
+        return $this ->item_arr;
     }
     function count($item_arr){
         $i = 0;
